@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guiboost - Formulário</title>
+
+    <!-- Adicione a tag meta para o CORS -->
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        section {
+            padding: 2em;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .linha {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .coluna {
+            width: 48%; /* Deixando espaço para margens */
+        }
+
+        .summary {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #precoTotal {
+            font-weight: bold;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Remova o crossorigin do script jQuery para evitar problemas de segurança -->
+    <script src="https://code.jquery.com/jquery-3.4.1.js" 
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+    crossorigin="anonymous">
+    </script>
+
+    <script>
+        function SubForm(event) {
+            event.preventDefault();
+
+            // Verificação do nome de usuário
+            const usuarioLoLElement = document.getElementById("usuarioLoL");
+            const usuarioLoLValue = usuarioLoLElement.value;
+
+            if (!usuarioLoLValue.includes("#")) {
+                // Exibe um aviso e interrompe o envio do formulário
+                alert("O nome de usuário deve conter '#'!");
+                return;
+            }
+
+            const formData = $("#pedidoForm").serializeArray();
+            console.log("Form data serialized:", formData);
+
+            $.ajax({
+                url: 'https://api.apispreadsheets.com/data/Uk0E8H5GEUl7S5q1/',
+                type: 'post',
+                data: formData,
+                success: function (data) {
+                    console.log("AJAX Success:", data);
+                    console.log("Form Data Submitted Successfully!");
+
+                    // Limpar dados do formulário
+                    document.getElementById("pedidoForm").reset();
+
+                    // Exibir mensagem de sucesso
+                    alert("Pedido realizado. Em um prazo de 1-3 dias, te enviaremos um convite para adicionar no LoL");
+
+                    // Redirecionar para a página index.html
+                    window.location.href = 'index.html';
+
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX Error:", status, error);
+                    console.log("Response:", xhr.responseText);
+                    console.log("There was an error :(");
+                }
+            });
+        }
+    </script>
+
+    <header>
+        <h1>Guiboost</h1>
+        <a href="index.html">Início</a>
+        <a href="calculadora.html">Serviço</a>
+    </header>
+
+    <section>
+        <h1>Formulário de Pedido</h1>
+        <form id="pedidoForm">
+            <!-- Linha 1 -->
+            <div class="linha">
+                <div class="coluna">
+                    <label for="ligaAtual">Liga Atual:</label>
+                    <input type="text" id="ligaAtual" name="ligaAtual" readonly>
+                </div>
+                <div class="coluna">
+                    <label for="ligaDesejada">Liga Desejada:</label>
+                    <input type="text" id="ligaDesejada" name="ligaDesejada" readonly>
+                </div>
+            </div>
+
+            <!-- Linha 2 -->
+            <div class="linha">
+                <div class="coluna">
+                    <label for="divisaoAtual">Divisão Atual:</label>
+                    <input type="text" id="divisaoAtual" name="divisaoAtual" readonly>
+                </div>
+                <div class="coluna">
+                    <label for="divisaoDesejada">Divisão Desejada:</label>
+                    <input type="text" id="divisaoDesejada" name="divisaoDesejada" readonly>
+                </div>
+            </div>
+
+            <!-- Linha 3 -->
+            <div class="linha">
+                <div class="coluna">
+                    <label for="usuarioLoL">Usuário do LoL completo:</label>
+                    <input type="text" id="usuarioLoL" name="usuarioLoL" required>
+                </div>
+                <div class="coluna">
+                    <label for="telefone">Telefone (Opcional):</label>
+                    <input type="tel" id="telefone" name="telefone">
+                </div>
+            </div>
+
+            <button onclick="SubForm(event)">Enviar Pedido</button>
+        </form>
+
+        <!-- Resumo das escolhas do usuário -->
+        <div class="summary" id="resumoPedido">
+            <p id="precoTotal"></p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Guiboost. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        // Função para obter parâmetros da URL
+        function obterParametroDaURL(nome) {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            return urlSearchParams.get(nome);
+        }
+
+        function capitalizarPrimeiraLetra(texto) {
+            return texto.charAt(0).toUpperCase() + texto.slice(1);
+        }
+
+        // Função para preencher os campos ao carregar a página
+        function preencherCampos() {
+            document.getElementById("ligaAtual").value = capitalizarPrimeiraLetra(obterParametroDaURL("ligaAtual"));
+            document.getElementById("divisaoAtual").value = obterParametroDaURL("divisaoAtual");
+            document.getElementById("ligaDesejada").value = capitalizarPrimeiraLetra(obterParametroDaURL("ligaDesejada"));
+            document.getElementById("divisaoDesejada").value = obterParametroDaURL("divisaoDesejada");
+        }
+
+        // Função para preencher o campo precoTotal ao carregar a página
+        function preencherPrecoTotal() {
+            const precoTotal = obterParametroDaURL("precoTotal");
+            const precoTotalElement = document.getElementById("precoTotal");
+
+            // Verifica se o parâmetro está presente na URL
+            if (precoTotal !== null) {
+                // Exibe o valor na página
+                precoTotalElement.textContent = `${precoTotal}`;
+            } else {
+                // Oculta o elemento se o parâmetro não estiver presente
+                precoTotalElement.style.display = "none";
+            }
+        }
+
+        // Chama as funções ao carregar a página
+        document.addEventListener("DOMContentLoaded", () => {
+            preencherCampos();
+            preencherPrecoTotal();
+        });
+    </script>
+</body>
+
+</html>

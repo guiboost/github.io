@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guiboost - Calculadora de Preço EloJob</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        section {
+            padding: 2em;
+            text-align: center;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select {
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        button {
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .linha {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .coluna {
+            width: calc(30% - 10px);
+            box-sizing: border-box;
+        }
+
+        .coluna img {
+            width: 100%;
+        }
+
+        a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Guiboost</h1>
+        <a href="index.html">Início</a>
+        <a href="calculadora.html">Serviço</a>
+    </header>
+
+    <section>
+        <h1>Calculadora de Preço EloJob</h1>
+
+        <!-- Linha 1 -->
+        <div class="linha">
+            <div class="coluna">
+                Selecione o Servidor e a Fila desejada
+            </div>
+            <div class="coluna">
+                Selecione a Liga e Divisão atual
+            </div>
+            <div class="coluna">
+                Selecione a Liga e Divisão desejada
+            </div>
+        </div>
+
+        <!-- Linha 2 -->
+        <div class="linha">
+            <div class="coluna">
+                <img id="serverImage" src="elos/br.webp" alt="Imagem do Servidor">
+            </div>
+            <div class="coluna">
+                <img id="eloAtualImage" src="elos/ferro.webp" alt="Imagem do Elo Atual">
+            </div>
+            <div class="coluna">
+                <img id="eloDesejadoImage" src="elos/ferro.webp" alt="Imagem do Elo Desejado">
+            </div>
+        </div>
+
+        <!-- Linha 3 -->
+        <div class="linha">
+            <div class="coluna">
+                <label for="servidorDesejadoSelect">Selecione o Servidor Desejado:</label>
+                <select id="servidorDesejadoSelect">
+                    <option value="BR">BR</option>
+                </select>
+            </div>
+            <div class="coluna">
+                <label for="eloAtualSelect">Selecione a Liga Atual:</label>
+                <select id="eloAtualSelect" onchange="updateEloImage('eloAtualImage', this); calcularPreco()">
+                    <option value="ferro">Ferro</option>
+                    <option value="bronze">Bronze</option>
+                    <option value="prata">Prata</option>
+                    <option value="ouro">Ouro</option>
+                    <option value="platina">Platina</option>
+                    <option value="esmeralda">Esmeralda</option>
+                    <option value="diamante">Diamante</option>
+                </select>
+            </div>
+            <div class="coluna">
+                <label for="eloDesejadoSelect">Selecione a Liga Desejada:</label>
+                <select id="eloDesejadoSelect" onchange="updateEloImage('eloDesejadoImage', this); calcularPreco()">
+                    <option value="ferro">Ferro</option>
+                    <option value="bronze">Bronze</option>
+                    <option value="prata">Prata</option>
+                    <option value="ouro">Ouro</option>
+                    <option value="platina">Platina</option>
+                    <option value="esmeralda">Esmeralda</option>
+                    <option value="diamante">Diamante</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Linha 4 -->
+        <div class="linha">
+            <div class="coluna">
+                <label for="filaDesejadaSelect">Selecione a Fila Desejada:</label>
+                <select id="filaDesejadaSelect">
+                    <option value="Solo/Duo">Solo/Duo</option>
+                    <option value="Flex">Flex</option>
+                </select>
+            </div>
+            <div class="coluna">
+                <label for="divisaoAtualSelect">Selecione a Divisão Atual:</label>
+                <select id="divisaoAtualSelect" onchange="calcularPreco()">
+                    <option value="IV">IV</option>
+                    <option value="III">III</option>
+                    <option value="II">II</option>
+                    <option value="I">I</option>
+                </select>
+            </div>
+            <div class="coluna">
+                <label for="divisaoDesejadaSelect">Selecione a Divisão Desejada:</label>
+                <select id="divisaoDesejadaSelect" onchange="calcularPreco()">
+                    <option value="IV">IV</option>
+                    <option value="III">III</option>
+                    <option value="II">II</option>
+                    <option value="I">I</option>
+                </select>
+            </div>
+        </div>
+
+        <p id="resultado"></p>
+
+        <!-- Exibir o botão apenas quando houver um valor -->
+        <button id="pedidoButton" style="display:none;" onclick="redirectToFormulario()">Faça seu pedido!</button>
+
+        <!-- Linha 110 - Adicione o seguinte script -->
+        <script>
+            // Função para verificar se há um valor calculado e exibir o botão
+            function verificarValorCalculado() {
+                const resultadoElement = document.getElementById("resultado");
+                const pedidoButton = document.getElementById("pedidoButton");
+        
+                // Verifica se há um valor no resultado
+                if (resultadoElement.textContent && resultadoElement.textContent.trim() !== "") {
+                    pedidoButton.style.display = "block"; // Exibe o botão
+                } else {
+                    pedidoButton.style.display = "none"; // Oculta o botão
+                }
+            }
+        
+            // Atualiza o botão ao calcular o preço
+            document.addEventListener("DOMContentLoaded", () => {
+                calcularPreco(); // Calcula o preço inicial
+                verificarValorCalculado(); // Verifica se há um valor calculado ao carregar a página
+            });
+        
+            function redirectToFormulario() {
+                // Obtém os valores selecionados pelo usuário
+                const ligaAtualSelect = document.getElementById("eloAtualSelect");
+                const divisaoAtualSelect = document.getElementById("divisaoAtualSelect");
+                const ligaDesejadaSelect = document.getElementById("eloDesejadoSelect");
+                const divisaoDesejadaSelect = document.getElementById("divisaoDesejadaSelect");
+        
+                const ligaAtual = ligaAtualSelect.value;
+                const divisaoAtual = divisaoAtualSelect.value;
+                const ligaDesejada = ligaDesejadaSelect.value;
+                const divisaoDesejada = divisaoDesejadaSelect.value;
+        
+                // Obtém o valor do preço total
+                const precoTotalElement = document.getElementById("resultado");
+                const precoTotal = precoTotalElement.textContent.trim();
+        
+                // Monta a URL com os parâmetros, incluindo o preço total
+                const url = `formulario.html?ligaAtual=${ligaAtual}&divisaoAtual=${divisaoAtual}&ligaDesejada=${ligaDesejada}&divisaoDesejada=${divisaoDesejada}&precoTotal=${precoTotal}`;
+        
+                // Redireciona para a página de formulário
+                window.location.href = url;
+            }
+        </script>
+    </section>
+
+    <footer>
+        <p>&copy; 2023 Guiboost. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function romanToNumber(roman) {
+            const romanNumeral = {
+                I: 1,
+                II: 2,
+                III: 3,
+                IV: 4
+            };
+            return romanNumeral[roman] || 0;
+        }
+
+        function updateEloImage(imageId, selectElement) {
+            const imageElement = document.getElementById(imageId);
+            const selectedElo = selectElement.value;
+            imageElement.src = `elos/${selectedElo}.webp`;
+        }
+
+        function mostrarBotao() {
+            const resultadoElement = document.getElementById("resultado");
+            const pedidoButton = document.getElementById("pedidoButton");
+
+            // Verifica se a mensagem de erro está presente
+            if (resultadoElement.textContent.includes("Por favor, certifique-se de que o elo desejado é maior do que o elo inicial escolhido.")) {
+                pedidoButton.style.display = "none";
+            } else {
+                pedidoButton.style.display = "block";
+            }
+        }
+
+        function calcularPreco() {
+            const precosPorDivisao = {
+                ferro: 5,
+                bronze: 7,
+                prata: 8,
+                ouro: 10,
+                platina: 15,
+                esmeralda: 25,
+                diamante: 32
+            };
+
+            const elos = ["ferro", "bronze", "prata", "ouro", "platina", "esmeralda", "diamante"];
+
+            const eloAtualSelect = document.getElementById("eloAtualSelect");
+            const divisaoAtualSelect = document.getElementById("divisaoAtualSelect");
+            const eloDesejadoSelect = document.getElementById("eloDesejadoSelect");
+            const divisaoDesejadaSelect = document.getElementById("divisaoDesejadaSelect");
+            const resultadoElement = document.getElementById("resultado");
+
+            const eloAtual = eloAtualSelect.value;
+            let divisaoAtual = romanToNumber(divisaoAtualSelect.value);
+            const eloDesejado = eloDesejadoSelect.value;
+            const divisaoDesejada = romanToNumber(divisaoDesejadaSelect.value);
+
+            if (!(eloAtual in precosPorDivisao) || !(eloDesejado in precosPorDivisao)) {
+                resultadoElement.textContent = "Erro: Elo não reconhecido.";
+                return;
+            }
+
+            // Verificar se o elo desejado é maior que o elo inicial
+            if (eloAtual === eloDesejado && divisaoAtual <= divisaoDesejada) {
+                resultadoElement.textContent = "Por favor, certifique-se de que o elo desejado é maior do que o elo inicial escolhido.";
+                mostrarBotao(); // Atualiza a visibilidade do botão
+                return;
+            }
+
+            // Verificar se o elo desejado é maior que o elo inicial
+            if (elos.indexOf(eloAtual) > elos.indexOf(eloDesejado)) {
+                resultadoElement.textContent = "Por favor, certifique-se de que o elo desejado é maior do que o elo inicial escolhido.";
+                mostrarBotao(); // Atualiza a visibilidade do botão
+                return;
+            }
+
+            let precoTotal = 0;
+
+            // Se for o mesmo elo
+            if (eloAtual === eloDesejado) {
+                precoTotal = precosPorDivisao[eloAtual] * Math.abs(divisaoAtual - divisaoDesejada);
+            } else {
+                // Calcula a quantidade de ligas entre a liga desejada e a atual
+                const indiceAtual = elos.indexOf(eloAtual);
+                const indiceDesejado = elos.indexOf(eloDesejado);
+                const ligasEntreElos = Math.abs(indiceDesejado - indiceAtual);
+
+                // For loop para calcular o preço até a liga desejada
+                for (let i = 0; i < ligasEntreElos; i++) {
+                    // Calcula o preço de subir divisões no elo atual
+                    precoTotal += precosPorDivisao[elos[indiceAtual + i]] * Math.abs(divisaoAtual - 1);
+
+                    // Adiciona o custo para ir para o próximo elo
+                    precoTotal += precosPorDivisao[elos[indiceAtual + i + 1]];
+
+                    // Atualiza a divisão temporária para IV
+                    divisaoAtual = 4;
+                }
+
+                // Calcula o preço de subir divisões no elo desejado, considerando a divisão IV
+                precoTotal += precosPorDivisao[eloDesejado] * Math.abs(4 - divisaoDesejada);
+            }
+            resultadoElement.textContent = `Preço pelo serviço: R$${precoTotal.toFixed(2)}`;
+            mostrarBotao(); // Atualiza a visibilidade do botão
+        }
+
+        // Atualize as imagens quando a página carregar
+        document.addEventListener("DOMContentLoaded", () => {
+            updateEloImage('eloAtualImage', document.getElementById("eloAtualSelect"));
+            updateEloImage('eloDesejadoImage', document.getElementById("eloDesejadoSelect"));
+            calcularPreco();
+        });
+    </script>
+</body>
+</html>
