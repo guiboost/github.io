@@ -95,6 +95,22 @@
         a:hover {
             text-decoration: underline;
         }
+
+        #enviarPedidoButton {
+            background-color: #FF5733; /* Cor de fundo do botão */
+            color: #fff; /* Cor do texto */
+            padding: 10px 20px; /* Espaçamento interno do botão */
+            font-size: 18px; /* Tamanho da fonte */
+            border: none; /* Sem borda */
+            border-radius: 5px; /* Borda arredondada */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #enviarPedidoButton:hover {
+            background-color: #FF5733; /* Cor de fundo ao passar o mouse */
+        }
+
     </style>
 </head>
 
@@ -194,7 +210,7 @@
                 </div>
             </div>
 
-            <button onclick="SubForm(event)">Enviar Pedido</button>
+            <button id="enviarPedidoButton" onclick="SubForm(event)">Enviar Pedido</button>
         </form>
 
         <!-- Resumo das escolhas do usuário -->
